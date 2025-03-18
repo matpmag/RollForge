@@ -1,137 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#121212" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/rollforge-icon-192.png" type="image/png" />
-  <title>RollForge</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #121212;
-      color: #ffffff;
-    }
-    header {
-      padding: 1rem;
-      font-size: 1.5rem;
-      background: #1e1e1e;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: space-around;
-      background: #1e1e1e;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      padding: 0.5rem 0;
-    }
-    nav button {
-      background: none;
-      color: #fff;
-      border: none;
-      font-size: 1rem;
-    }
-    .tab {
-      display: none;
-      padding: 1rem;
-    }
-    .tab.active {
-      display: block;
-    }
-    .dice-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-    .dice-buttons button {
-      background: #2a2a2a;
-      color: white;
-      border: none;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RollForge Character Viewer</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>RollForge</header>
 
-  <div id="stats" class="tab active">
-    <h2>Stats</h2>
-    <p>AC: 16</p>
-    <p>HP: 38 / 44</p>
-    <p>Speed: 30 ft</p>
-    <p>Passive Perception: 15</p>
+  <!-- User role selection -->
+  <div class="role-selector">
+    <label for="user-role">Select Your Role:</label>
+    <select id="user-role" onchange="setUserRole(this.value)">
+        <option value="">-- Select Role --</option>
+        <option value="dm">Dungeon Master</option>
+        <option value="Brandon">Brandon</option>
+        <option value="Stephen">Stephen</option>
+        <option value="Josh">Josh</option>
+    </select>
   </div>
 
-  <div id="inventory" class="tab">
-    <h2>Inventory</h2>
-    <ul>
-      <li>Healing Potion x2</li>
-      <li>Longsword</li>
-      <li>Thieves' Tools</li>
-    </ul>
-  </div>
-
-  <div id="actions" class="tab">
-    <h2>Actions</h2>
-    <ul>
-      <li>Attack: Longsword +5 to hit (1d8+3 slashing)</li>
-      <li>Spell: Fire Bolt +6 to hit (1d10 fire)</li>
-    </ul>
-  </div>
-
-  <div id="dice" class="tab">
-    <h2>Dice Roller</h2>
-    <div class="dice-buttons">
-      <button onclick="rollDice('1d20')">Roll 1d20</button>
-      <button onclick="rollDice('1d20+5')">Attack (+5)</button>
-      <button onclick="rollDice('2d6+3')">Damage (2d6+3)</button>
-      <button onclick="rollDice('1d10')">Roll 1d10</button>
-    </div>
-    <div id="result" style="margin-top: 1rem; font-size: 1.25rem;"></div>
-  </div>
-
-  <nav>
-    <button onclick="switchTab('stats')">Stats</button>
-    <button onclick="switchTab('inventory')">Inventory</button>
-    <button onclick="switchTab('actions')">Actions</button>
-    <button onclick="switchTab('dice')">Dice</button>
+  <!-- Navigation -->
+  <nav class="navigation">
+    <button onclick="loadTab('stats')">Stats</button>
+    <button onclick="loadTab('inventory')">Inventory</button>
+    <button onclick="loadTab('actions')">Actions</button>
+    <button onclick="loadTab('dice')">Dice</button>
   </nav>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
+  <!-- Dynamic Content -->
+  <div id="tab-content"></div>
 
-    function switchTab(id) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
+  <!-- JS Templates -->
+  <script src="js/templates.js"></script>
+  <!-- Main JS Logic -->
+  <script src="js/main.js"></script>
 
-    function rollDice(formula) {
-      const result = roll(formula);
-      document.getElementById("result").textContent = `${formula} → ${result}`;
-    }
-
-    function roll(formula) {
-      const match = formula.match(/(\\d*)d(\\d+)([+-]\\d+)?/);
-      if (!match) return 'Invalid formula';
-      const [, count, sides, mod] = match;
-      const diceCount = parseInt(count || '1');
-      const die = parseInt(sides);
-      const modifier = parseInt(mod || '0');
-      let total = 0;
-      for (let i = 0; i < diceCount; i++) {
-        total += Math.floor(Math.random() * die) + 1;
-      }
-      return total + modifier;
-    }
-  </script>
 </body>
 </html>
