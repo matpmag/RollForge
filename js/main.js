@@ -33,3 +33,9 @@ async function loadTab(tabName) {
     );
     return chars;
   }
+
+  function rollDice(sides, charName) {
+    const result = Math.floor(Math.random() * sides) + 1;
+    document.getElementById(`dice-result-${charName.replace(/\s/g,'-')}`).innerText = 
+      `${charName} rolled a d${sides}: ${result}`;
+  }

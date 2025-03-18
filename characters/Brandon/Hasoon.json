@@ -1,0 +1,13 @@
+{
+    "name": "Hasoon",
+    "stats": {
+      "str": 10,
+      "dex": 14,
+      "con": 12,
+      "int": 18,
+      "wis": 11,
+      "cha": 15
+    },
+    "inventory": ["Spellbook", "Dagger", "Potion of Healing"],
+    "actions": ["Firebolt", "Mage Hand", "Magic Missile"]
+  }
