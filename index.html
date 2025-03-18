@@ -4,37 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RollForge Character Viewer</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom stylesheet after Bootstrap -->
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-dark text-light">
+  <div class="container py-4">
 
-  <!-- User role selection -->
-  <div class="role-selector">
-    <label for="user-role">Select Your Role:</label>
-    <select id="user-role" onchange="setUserRole(this.value)">
-        <option value="">-- Select Role --</option>
-        <option value="dm">Dungeon Master</option>
-        <option value="Brandon">Brandon</option>
-        <option value="Stephen">Stephen</option>
-        <option value="Josh">Josh</option>
-    </select>
+    <div id="user-info" class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <p class="mb-0">Signed in as: <span id="current-user" class="fw-bold text-info"></span></p>
+        <p class="mb-0">Character: <span id="current-character" class="fw-bold text-warning"></span></p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-light btn-sm" onclick="changeCharacter()">Change Character</button>
+        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-primary" onclick="loadTab('stats')">Stats</button>
+        <button class="btn btn-primary" onclick="loadTab('inventory')">Inventory</button>
+        <button class="btn btn-primary" onclick="loadTab('actions')">Actions</button>
+        <button class="btn btn-primary" onclick="loadTab('dice')">Dice</button>
+      </div>
+    </div>
+
+    <div id="tab-content" class="bg-secondary p-3 rounded shadow-sm"></div>
+
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentUser = localStorage.getItem('userRole');
+      const currentCharPath = localStorage.getItem('activeCharacter');
+      const currentCharName = currentCharPath ? currentCharPath.split('/')[1].replace('.json', '') : '';
+      const currentPlayer = currentCharPath ? currentCharPath.split('/')[0] : '';
 
-  <!-- Navigation -->
-  <nav class="navigation">
-    <button onclick="loadTab('stats')">Stats</button>
-    <button onclick="loadTab('inventory')">Inventory</button>
-    <button onclick="loadTab('actions')">Actions</button>
-    <button onclick="loadTab('dice')">Dice</button>
-  </nav>
+      if (currentUser) {
+        document.getElementById('current-user').textContent = currentUser;
+      }
 
-  <!-- Dynamic Content -->
-  <div id="tab-content"></div>
+      if (currentUser === 'Master' && currentCharName) {
+        document.getElementById('current-character').textContent = `${currentPlayer}: ${currentCharName}`;
+      } else if (currentCharName) {
+        document.getElementById('current-character').textContent = currentCharName;
+      }
 
-  <!-- JS Templates -->
+      // Character selection logic moved to main.js
+      window.changeCharacter = function () {
+        localStorage.removeItem('activeCharacter');
+        if (typeof showCharacterSelector === 'function') {
+          showCharacterSelector();
+        }
+      };
+
+      if (!currentCharPath && typeof showCharacterSelector === 'function') {
+        showCharacterSelector();
+      }
+    });
+  </script>
+
+  <!-- Character Selection Modal -->
+  <div class="modal fade" id="characterSelectModal" tabindex="-1" aria-labelledby="characterSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="characterSelectModalLabel">Select Your Character</h5>
+        </div>
+        <div class="modal-body">
+          <ul id="character-list" class="list-group">
+            <!-- Character entries will be injected here -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="js/templates.js"></script>
-  <!-- Main JS Logic -->
   <script src="js/main.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
