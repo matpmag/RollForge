@@ -1,0 +1,21 @@
+{
+  "name": "RollForge",
+  "short_name": "RollForge",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "description": "RollForge is a lightweight D&D companion app designed for speed, clarity, and control. Track stats, manage inventory, view actions, and roll dice—all in a clean, mobile-first interface crafted for tabletop immersion.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
