@@ -1,0 +1,12 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  h2, h3, h4 {
+    color: #ffffff;
+  }
+  
+  .section-title {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1rem;
+  }
