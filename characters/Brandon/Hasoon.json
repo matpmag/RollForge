@@ -1,13 +1,27 @@
 {
     "name": "Hasoon",
-    "stats": {
-      "str": 10,
-      "dex": 14,
-      "con": 12,
-      "int": 18,
-      "wis": 11,
-      "cha": 15
+    "profilePic": "characters/brandon/hasoon.jpg",
+    "ac": 13,
+    "initiative": "+3",
+    "hp": {
+      "current": 40,
+      "max": 40
     },
+    "conditions": ["Poisoned"],
+    "inspiration": true,
+    "stats": {
+      "str": 10, "dex": 14, "con": 12, "int": 18, "wis": 11, "cha": 15
+    },
+    "savingThrows": {
+      "str": {"value": "+1", "proficient": true},
+      "dex": {"value": "+2", "proficient": false}
+    },
+    "senses": {
+      "passivePerception": 12,
+      "passiveInvestigation": 15,
+      "passiveInsight": 10
+    },
+    "vision": "Darkvision",
     "inventory": ["Spellbook", "Dagger", "Potion of Healing"],
     "actions": ["Firebolt", "Mage Hand", "Magic Missile"]
   }

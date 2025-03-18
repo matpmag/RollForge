@@ -12,77 +12,92 @@
 <body class="bg-dark text-light">
   <div class="container py-4">
 
+    <!-- Top Bar (User Info and Character Info) -->
     <div id="user-info" class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <p class="mb-0">Signed in as: <span id="current-user" class="fw-bold text-info"></span></p>
-        <p class="mb-0">Character: <span id="current-character" class="fw-bold text-warning"></span></p>
+      <div class="d-flex">
+        <p class="mb-0 me-2">Character: <span id="current-character" class="fw-bold text-warning"></span></p>
+        <button class="btn btn-outline-light btn-sm" onclick="changeCharacter()">Change Character</button>
       </div>
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-light btn-sm" onclick="changeCharacter()">Change Character</button>
+        <p class="mb-0">Signed in as: <span id="current-user" class="fw-bold text-info"></span></p>
         <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
       </div>
     </div>
 
-    <div class="mb-4">
-      <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-primary" onclick="loadTab('stats')">Stats</button>
-        <button class="btn btn-primary" onclick="loadTab('inventory')">Inventory</button>
-        <button class="btn btn-primary" onclick="loadTab('actions')">Actions</button>
-        <button class="btn btn-primary" onclick="loadTab('dice')">Dice</button>
+    <div id="character-content" class="d-none">
+
+      <!-- Character Profile Section -->
+      <div class="row mb-4">
+        <div class="col-4">
+          <p>Armour Class: <span id="armour-class">—</span></p>
+          <p>Initiative Modifier: <span id="initiative">—</span></p>
+          <button class="btn btn-primary">Rest</button>
+        </div>
+        <div class="col-4 text-center">
+          <img id="profile-pic" src="default-pic.png" alt="Character Profile" class="img-fluid rounded-circle mb-2">
+          <h4 id="character-name">Character Name</h4>
+          <p>Inspiration: <span id="inspiration">—</span></p>
+        </div>
+        <div class="col-4 text-end">
+          <p>Hit Points: <span id="hit-points">—/—</span></p>
+          <p>Conditions: <span id="conditions">None</span></p>
+        </div>
+      </div>
+
+      <!-- Tabs Section -->
+      <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="stats-tab" data-bs-toggle="tab" href="#stats">Stats</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="inventory-tab" data-bs-toggle="tab" href="#inventory">Inventory</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="actions-tab" data-bs-toggle="tab" href="#actions">Actions</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="stats">Select a character to view stats.</div>
+        <div class="tab-pane fade" id="inventory">Select a character to view inventory.</div>
+        <div class="tab-pane fade" id="actions">Select a character to view actions.</div>
+      </div>
+
+      <!-- Dice Tray -->
+      <div class="mt-4">
+        <div class="border rounded p-3" id="dice-tray">
+          <button class="btn btn-success">Roll Dice</button>
+          <p id="dice-result">Result will appear here</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Character Selection Modal -->
+    <div class="modal fade" id="characterSelectModal" tabindex="-1" aria-labelledby="characterSelectModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border-light">
+          <div class="modal-header">
+            <h5 class="modal-title" id="characterSelectModalLabel">Select Your Character</h5>
+          </div>
+          <div class="modal-body">
+            <ul id="character-list" class="list-group">
+              <!-- Character entries will be injected here -->
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div id="tab-content" class="bg-secondary p-3 rounded shadow-sm"></div>
-
-  </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const currentUser = localStorage.getItem('userRole');
-      const currentCharPath = localStorage.getItem('activeCharacter');
-      const currentCharName = currentCharPath ? currentCharPath.split('/')[1].replace('.json', '') : '';
-      const currentPlayer = currentCharPath ? currentCharPath.split('/')[0] : '';
-
-      if (currentUser) {
-        document.getElementById('current-user').textContent = currentUser;
-      }
-
-      if (currentUser === 'Master' && currentCharName) {
-        document.getElementById('current-character').textContent = `${currentPlayer}: ${currentCharName}`;
-      } else if (currentCharName) {
-        document.getElementById('current-character').textContent = currentCharName;
-      }
-
-      // Character selection logic moved to main.js
-      window.changeCharacter = function () {
-        localStorage.removeItem('activeCharacter');
-        if (typeof showCharacterSelector === 'function') {
-          showCharacterSelector();
+    <script src="js/templates.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const currentUser = localStorage.getItem('userRole');
+        if (currentUser) {
+          document.getElementById('current-user').textContent = currentUser;
         }
-      };
-
-      if (!currentCharPath && typeof showCharacterSelector === 'function') {
-        showCharacterSelector();
-      }
-    });
-  </script>
-
-  <!-- Character Selection Modal -->
-  <div class="modal fade" id="characterSelectModal" tabindex="-1" aria-labelledby="characterSelectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-light border-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="characterSelectModalLabel">Select Your Character</h5>
-        </div>
-        <div class="modal-body">
-          <ul id="character-list" class="list-group">
-            <!-- Character entries will be injected here -->
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="js/templates.js"></script>
-  <script src="js/main.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      });
+    </script>
 </body>
 </html>
