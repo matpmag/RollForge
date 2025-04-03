@@ -8,96 +8,217 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom stylesheet after Bootstrap -->
     <link rel="stylesheet" href="styles.css">
+    <script src="js/templates/dice.js"></script>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://twemoji.maxcdn.com/v/latest/twemoji.min.css" crossorigin="anonymous">
 </head>
 <body class="bg-dark text-light">
-  <div class="container py-4">
+  <div id="app" class="panel-open">
+    <div class="container py-4">
 
-    <!-- Top Bar (User Info and Character Info) -->
-    <div id="user-info" class="d-flex justify-content-between align-items-center mb-4">
-      <div class="d-flex">
-        <p class="mb-0 me-2">Character: <span id="current-character" class="fw-bold text-warning"></span></p>
-        <button class="btn btn-outline-light btn-sm" onclick="changeCharacter()">Change Character</button>
+      <!-- Top Bar (User Info and Character Info) -->
+      <div id="user-info" class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex">
+          <p class="mb-0 me-2">Character: <span id="current-character" class="fw-bold text-warning"></span></p>
+          <button class="btn btn-outline-light btn-sm" onclick="changeCharacter()">Change Character</button>
+        </div>
+        <div class="d-flex gap-2">
+          <p class="mb-0">Signed in as: <span id="current-user" class="fw-bold text-info"></span></p>
+          <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
       </div>
-      <div class="d-flex gap-2">
-        <p class="mb-0">Signed in as: <span id="current-user" class="fw-bold text-info"></span></p>
-        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+
+      <div id="character-content" class="d-none">
+
+        <!-- Character Profile Section -->
+        <div class="row mb-4">
+          <div class="col-4">
+            <p>Armour Class: <span id="armour-class">—</span></p>
+            <p>Initiative Modifier: <span id="initiative">—</span></p>
+            <button class="btn btn-primary">Rest</button>
+          </div>
+          <div class="col-4 text-center">
+            <img id="profile-pic" src="default-pic.png" alt="Character Profile" class="img-fluid rounded-circle mb-2">
+            <h4 id="character-name">Character Name</h4>
+            <p>Inspiration: <span id="inspiration">—</span></p>
+          </div>
+          <div class="col-4 text-end">
+            <p>Hit Points: <span id="hit-points">—/—</span></p>
+            <p>Conditions: <span id="conditions">None</span></p>
+          </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="stats-tab" href="#stats">Stats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="inventory-tab" href="#inventory">Inventory</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="actions-tab" href="#actions">Actions</a>
+          </li>
+        </ul>
+        <div id="tab-container">Loading...</div>
+
       </div>
+
+      <!-- Character Selection Modal -->
+      <div class="modal fade" id="characterSelectModal" tabindex="-1" aria-labelledby="characterSelectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content bg-dark text-light border-light">
+            <div class="modal-header">
+              <h5 class="modal-title" id="characterSelectModalLabel">Select Your Character</h5>
+            </div>
+            <div class="modal-body">
+              <ul id="character-list" class="list-group">
+                <!-- Character entries will be injected here -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dice-panel">
+    <!-- Header -->
+    <div class="dice-panel-header">
+      <button class="btn btn-link text-light p-0 text-decoration-none" onclick="toggleDicePanel()">
+        <h5 class="mb-0">
+          <i class="fas fa-chevron-right panel-toggle-icon me-2"></i>
+          Dice & Chat
+        </h5>
+      </button>
     </div>
 
-    <div id="character-content" class="d-none">
+    <!-- Combined Log -->
+    <div class="dice-chat-log">
+      <!-- Rolls and messages will be added here -->
+    </div>
 
-      <!-- Character Profile Section -->
-      <div class="row mb-4">
-        <div class="col-4">
-          <p>Armour Class: <span id="armour-class">—</span></p>
-          <p>Initiative Modifier: <span id="initiative">—</span></p>
-          <button class="btn btn-primary">Rest</button>
-        </div>
-        <div class="col-4 text-center">
-          <img id="profile-pic" src="default-pic.png" alt="Character Profile" class="img-fluid rounded-circle mb-2">
-          <h4 id="character-name">Character Name</h4>
-          <p>Inspiration: <span id="inspiration">—</span></p>
-        </div>
-        <div class="col-4 text-end">
-          <p>Hit Points: <span id="hit-points">—/—</span></p>
-          <p>Conditions: <span id="conditions">None</span></p>
-        </div>
-      </div>
-
-      <!-- Tabs Section -->
-      <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="stats-tab" data-bs-toggle="tab" href="#stats">Stats</a>
+    <!-- Input Controls -->
+    <div class="panel-controls">
+      <!-- Input Type Tabs -->
+      <ul class="nav nav-tabs nav-fill" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dice-controls" type="button">Roll Dice</button>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" id="inventory-tab" data-bs-toggle="tab" href="#inventory">Inventory</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="actions-tab" data-bs-toggle="tab" href="#actions">Actions</a>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#chat-input" type="button">Send Message</button>
         </li>
       </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="stats">Select a character to view stats.</div>
-        <div class="tab-pane fade" id="inventory">Select a character to view inventory.</div>
-        <div class="tab-pane fade" id="actions">Select a character to view actions.</div>
-      </div>
 
-      <!-- Dice Tray -->
-      <div class="mt-4">
-        <div class="border rounded p-3" id="dice-tray">
-          <button class="btn btn-success">Roll Dice</button>
-          <p id="dice-result">Result will appear here</p>
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Dice Controls -->
+        <div class="tab-pane fade show active" id="dice-controls">
+          <div class="dice-controls">
+            <div class="dice-buttons">
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d20')">
+                  <img src="icons/dice/D20.svg" class="dice-icon" alt="d20">
+                </button>
+                <span class="dice-badge" id="badge-d20" hidden>0</span>
+              </div>
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d12')">
+                  <img src="icons/dice/D12.svg" class="dice-icon" alt="d12">
+                </button>
+                <span class="dice-badge" id="badge-d12" hidden>0</span>
+              </div>
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d10')">
+                  <img src="icons/dice/D10.svg" class="dice-icon" alt="d10">
+                </button>
+                <span class="dice-badge" id="badge-d10" hidden>0</span>
+              </div>
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d8')">
+                  <img src="icons/dice/D8.svg" class="dice-icon" alt="d8">
+                </button>
+                <span class="dice-badge" id="badge-d8" hidden>0</span>
+              </div>
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d6')">
+                  <img src="icons/dice/D6.svg" class="dice-icon" alt="d6">
+                </button>
+                <span class="dice-badge" id="badge-d6" hidden>0</span>
+              </div>
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d4')">
+                  <img src="icons/dice/D4.svg" class="dice-icon" alt="d4">
+                </button>
+                <span class="dice-badge" id="badge-d4" hidden>0</span>
+              </div>
+              <div class="dice-button-wrapper">
+                <button class="btn btn-outline-light" onclick="addDie('d100')">
+                  <img src="icons/dice/D100.svg" class="dice-icon" alt="d100">
+                </button>
+                <span class="dice-badge" id="badge-d100" hidden>0</span>
+              </div>
+            </div>
+
+            <div class="dice-tray-controls">
+              <button class="btn btn-secondary" onclick="clearDice()">Clear</button>
+              <button class="btn btn-success" onclick="rollDice()">Roll!</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="tab-pane fade" id="chat-input">
+          <div class="chat-input-group">
+            <div class="input-group">
+              <input type="text" class="form-control bg-dark text-light border-secondary" 
+                     placeholder="Type a message..." 
+                     onkeypress="handleChatInput(event)">
+              <button class="btn btn-outline-secondary" onclick="sendChat()">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
+  </div>
 
-    <!-- Character Selection Modal -->
-    <div class="modal fade" id="characterSelectModal" tabindex="-1" aria-labelledby="characterSelectModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-light">
-          <div class="modal-header">
-            <h5 class="modal-title" id="characterSelectModalLabel">Select Your Character</h5>
-          </div>
-          <div class="modal-body">
-            <ul id="character-list" class="list-group">
-              <!-- Character entries will be injected here -->
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+  <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
 
-    <script src="js/templates.js"></script>
-    <script src="js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const currentUser = localStorage.getItem('userRole');
-        if (currentUser) {
-          document.getElementById('current-user').textContent = currentUser;
-        }
+  <!-- App Scripts -->
+  <script src="js/templates.js"></script>
+  <script src="js/templates/dice.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize tabs
+      const tabLinks = document.querySelectorAll('.nav-link');
+      tabLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(e.target.dataset.bsTarget);
+          if (target) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+            document.querySelectorAll('.nav-link').forEach(navLink => navLink.classList.remove('active'));
+            target.classList.add('show', 'active');
+            e.target.classList.add('active');
+          }
+        });
       });
-    </script>
+
+      // Set initial active tab
+      const firstTab = document.querySelector('.nav-link');
+      if (firstTab) {
+        firstTab.click();
+      }
+    });
+  </script>
 </body>
 </html>
